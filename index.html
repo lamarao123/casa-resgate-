@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base Resgate</title>
+    <!-- Bootstrap CSS (versão mais leve) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Bootstrap Icons (apenas os necessários) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary: #3a0ca3;
+            --secondary: #4361ee;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.8rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/600');
+            background-size: cover;
+            background-position: center;
+            padding: 8rem 0 5rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: #37b9e0;
+            transform: translateY(-3px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-body {
+            padding: 1.8rem;
+        }
+        
+        .card-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .social-icon {
+            font-size: 1.5rem;
+            color: white;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            color: var(--accent);
+            transform: translateY(-5px);
+        }
+        
+        .top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .top-btn.active {
+            opacity: 1;
+        }
+        
+        .top-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Countdown Timer */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .countdown-item {
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .countdown-value {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+            opacity: 0.8;
+        }
+        
+        /* Agenda styling */
+        .agenda-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        
+        .agenda-time {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-right: 1rem;
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(76, 201, 240, 0.2);
+        }
+        
+        .agenda-content h5 {
+            margin-bottom: 0.25rem;
+            color: var(--primary);
+        }
+        
+        /* Count-up numbers */
+        .count-up {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        /* ESTILOS DO CARROSSEL */
+        .carousel-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 2rem;
+        }
+        
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transition: opacity 1.5s ease-in-out;
+            opacity: 0;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dot.active {
+            background-color: white;
+        }
+        
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #333;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .carousel-button:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .carousel-button.prev {
+            left: 15px;
+        }
+        
+        .carousel-button.next {
+            right: 15px;
+        }
+        
+        .image-container {
+          position: relative;
+          display: inline-block;
+        }
+        
+        .image-container img {
+          display: block;
+          width: 100%;
+          height: auto;
+        }
+        
+        .middle-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-size: 1.5em;
+          font-weight: bold;
+          text-align: center;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Estilos do formulário de contato */
+        .contact-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-control {
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 1rem;
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(76, 201, 240, 0.25);
+            border-color: var(--accent);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 5rem 0 3rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .countdown-item {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .countdown-value {
+                font-size: 1.4rem;
+            }
+            
+            .carousel-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Casa Base Resgate</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#sobre">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#eventos">Eventos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#assistir">Assistir</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contato">Contato</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light ms-2 px-4" href="#doar">Doar</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Carousel -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <!-- Carousel implementation -->
+                    <div class="carousel-container">
+                        <div class="carousel-slide active">
+                            <img src="001.jpg" alt="Base Resgate">
+                            <div class="middle-text">Bem-vindo à Base Resgate</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="002.jpg" alt="Culto Domingo">
+                            <div class="middle-text">Cultos aos Domingos às 19h</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="003.jpg" alt="Jovens">
+                            <div class="middle-text">Venha ouvir uma palavra de Deus para o seu Coração</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="004.jpg" alt="Eventos">
+                            <div class="middle-text">adoração move o coração de Deus </div>
+                        </div>
+                    
+                        <button class="carousel-button prev">&lt;</button>
+                        <button class="carousel-button next">&gt;</button>
+                    
+                        <div class="carousel-dots"></div>
+                    </div>
+                    
+                    <h1>Base Resgate</h1>
+                    <p>Junte-se a nós neste fim de semana para uma experiência transformadora!</p>
+                    <div class="countdown-container" id="countdown">
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="days">00</span>
+                            <span class="countdown-label">Dias</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="hours">00</span>
+                            <span class="countdown-label">Horas</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="minutes">00</span>
+                            <span class="countdown-label">Min</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="seconds">00</span>
+                            <span class="countdown-label">Seg</span>
+                        </div>
+                    </div>
+                    <a href="#assistir" class="btn btn-primary btn-lg me-2">Assistir Online</a>
+                    <a href="#" class="btn btn-outline-light btn-lg" data-bs-toggle="modal" data-bs-target="#locationModal">Como Chegar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Modal -->
+    <div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationModalLabel">Como Chegar</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Endereço</h4>
+                    <p>Rua Maria de Lourdes 6275 Igarape - Porto Velho, RO</p>
+                    <h4 class="mt-4">Horários</h4>
+                    <ul>
+                        <li>Domingo: 19h</li>
+                        <li>Quarta-feira: Estudo Bíblico</li>
+                        <li>Sábado: 19:30h (Culto de Jovens)</li>
+                    </ul>
+                    <h4 class="mt-4">Mapa</h4>
+                    <div class="ratio ratio-16x9">
+                        <iframe src="/api/placeholder/800/450" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a href="https://maps.google.com" target="_blank" class="btn btn-primary">Abrir no Google Maps</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Numbers Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4">
+                    <div class="count-up" id="years-count">10</div>
+                    <h5>Anos de História</h5>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="count-up" id="members-count">70</div>
+                    <h5>Membros</h5>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="count-up" id="families-count">08</div>
+                    <h5>Células</h5>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="count-up" id="countries-count">05</div>
+                    <h5>Projetos Sociais</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cultos Section -->
+    <section class="py-5" id="sobre">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-12">
+                    <h2 class="section-title">Nossos Cultos</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="03.jpg" class="card-img-top" alt="Culto de Domingo">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-calendar-heart"></i>
+                            </div>
+                            <h3 class="card-title">Culto de Domingo</h3>
+                            <p class="card-text">Venha celebrar conosco todos os domingos às 19h. Um momento especial para toda a família.</p>
+                            <a href="#" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#sundayModal">Saiba Mais</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="09.jpg" class="card-img-top" alt="Estudo Bíblico">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-book"></i>
+                            </div>
+                            <h3 class="card-title">Células</h3>
+                            <p class="card-text">Quartas-feiras. Um momento especial para aprofundar o conhecimento nas escrituras.</p>
+                            <a href="#" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bibleModal">Saiba Mais</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="02.jpg" class="card-img-top" alt="Culto de Jovens">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <h3 class="card-title">Culto de Jovens</h3>
+                            <p class="card-text">Sábados às 19:30h. Um encontro dinâmico e cheio de energia para os jovens da comunidade.</p>
+                            <a href="#" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#youthModal">Saiba Mais</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sunday Service Modal -->
+    <div class="modal fade" id="sundayModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Culto de Domingo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="/api/placeholder/400/200" class="img-fluid rounded mb-3" alt="Culto de Domingo">
+                    <h4>Horários</h4>
+                    <p>19h todos os domingos</p>
+                    
+                    <h4 class="mt-4">Sobre o Culto</h4>
+                    <p>Nossos cultos dominicais são momentos especiais de adoração, ensino bíblico e comunhão.
+                         Contamos com uma equipe de louvor que conduz momentos inspiradores de adoração
+                          e uma mensagem relevante para os dias atuais.</p>
+                    
+                    <h4 class="mt-4">Programação</h4>
+                    <div class="agenda-item">
+                        <div class="agenda-time">19h00</div>
+                        <div class="agenda-content">
+                            <h5>Boas-vindas</h5>
+                            <p>Recepção e acolhimento</p>
+                        </div>
+                    </div>
+                    <div class="agenda-item">
+                        <div class="agenda-time">19h15</div>
+                        <div class="agenda-content">
+                            <h5>Louvor</h5>
+                            <p>Momento de adoração</p>
+                        </div>
+                    </div>
+                    <div class="agenda-item">
+                        <div class="agenda-time">19h45</div>
+                        <div class="agenda-content">
+                            <h5>Mensagem</h5>
+                            <p>Palavra e reflexão bíblica</p>
+                        </div>
+                    </div>
+                    <div class="agenda-item">
+                        <div class="agenda-time">20h30</div>
+                        <div class="agenda-content">
+                            <h5>Encerramento</h5>
+                            <p>Comunhão e confraternização</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a href="#contato" class="btn btn-primary" data-bs-dismiss="modal">Entre em Contato</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bible Study Modal -->
+    <div class="modal fade" id="bibleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Célalas</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Horários:19:30</h4>
+                    <p>Quartas-feiras</p>
+                    
+                    <h4 class="mt-4">Células </h4>
+                    <p>Um encotro pra comunhão com a igreja e amigos, tambem um momento de juntos a mesa, tremendamente Saudavel</p>
+                    
+                    <h4 class="mt-4">Comunhão</h4>
+                    <p>momento de descontracão ,muitas bricadeiras e outros, so vendo pra entender </p>
+                    
+                    <h4 class="mt-4">Armonia </h4>
+                    <p>Aprendemos que a comunhão traz intimidade com os outros e conhesemos melhor a Igreja </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a href="#contato" class="btn btn-primary" data-bs-dismiss="modal">Entre em Contato</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Youth Service Modal -->
+    <div class="modal fade" id="youthModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Culto de Jovens</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="/api/placeholder/400/200" class="img-fluid rounded mb-3" alt="Culto de Jovens">
+                    <h4>Horários</h4>
+                    <p>Sábados às 19:30h</p>
+                    
+                    <h4 class="mt-4">Sobre o Culto</h4>
+                    <p>Nosso culto de jovens é um ambiente descontraído e energético onde os jovens podem se conectar, 
+                        adorar e crescer juntos na fé.</p>
+                    
+                    <h4 class="mt-4">Atividades</h4>
+                    <p>Além do culto, promovemos atividades especiais como retiros, ações sociais e momentos de comunhão para os jovens.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a href="#contato" class="btn btn-primary" data-bs-dismiss="modal">Entre em Contato</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Section -->
+    <section class="py-5 bg-light" id="eventos">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-12">
+                    <h2 class="section-title">Próximos Eventos
+
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <img src="08.jpg" class="card-img-top" alt="Evento de Jovens">
+                        <div class="card-body">
+                            <h4 class="card-title">Encontro Conecter</h4>
+                            <p class="text-muted"><i class="bi bi-calendar-event me-2"></i>24-25 de Maio, 2025</p>
+                            <p class="card-text">Um final de semana especial onde Deus vai nos reconectar ao seu amor e nos trazer de volta pra reino do seu Amor </p>
+                            <a href="#" class="btn btn-primary">Inscreva-se</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <img src="07.jpg" class="card-img-top" alt="Retiro Familiar">
+                        <div class="card-body">
+                            <h4 class="card-title">Casamento Comunitario</h4>
+                            <p class="text-muted"><i class="bi bi-calendar-event me-2"></i>31 de Maio, 2025</p>
+                            <p class="card-text">Um tempo especial para fortalecer os laços familiares e fechar prechas permitindo que as Bençãos de Deus seja abundante </p>
+                            <a href="#" class="btn btn-primary">Saiba Mais</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Watch Online Section -->
+    <section class="py-5" id="assistir">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-12">
+                    <h2 class="section-title">Assistir Online</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 class="mb-4">Acompanhe nossos cultos ao vivo</h4>
+                            <div class="ratio ratio-16x9 mb-4">
+                                <iframe src="/api/placeholder/800/450" allowfullscreen></iframe>
+                            </div>
+                            <p>Não pode estar presente fisicamente? Assista aos nossos cultos ao vivo todos os domingos às 19h.</p>
+                            <div class="mt-4">
+                                <a href="https://youtube.com" target="_blank" class="btn btn-outline-primary me-2">
+                                    <i class="bi bi-youtube me-2"></i>YouTube
+                                </a>
+                                <a href="https://facebook.com" target="_blank" class="btn btn-outline-primary">
+                                    <i class="bi bi-facebook me-2"></i>Facebook
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section com Formulário -->
+    <section class="py-5 bg-light" id="contato">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-12">
+                    <h2 class="section-title">Entre em Contato</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="contact-form">
+                        <h4 class="mb-4">Envie sua mensagem</h4>
+                        <form id="contactForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="name" placeholder="Seu nome completo" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="seu.email@exemplo.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Telefone</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Assunto</label>
+                                <select class="form-control" id="subject" required>
+                                    <option value="" selected disabled>Selecione um assunto</option>
+                                    <option value="informacoes">Informações Gerais</option>
+                                    <option value="eventos">Eventos</option>
+                                    <option value="visita">Agendar Visita</option>
+                                    <option value="oracao">Pedido de Oração</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Mensagem</label>
+                                <textarea class="form-control" id="message" rows="5" placeholder="Digite sua mensagem aqui..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Enviar Mensagem</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Informações de Contato</h4>
+                            <p><i class="bi bi-geo-alt me-2"></i> Rua Maria de Lourdes, 6275, Porto Velho-RO</p>
+                            <p><i class="bi bi-telephone me-2"></i> (69) 99257-8269</p>
+                            <p><i class="bi bi-envelope me-2"></i> contato@baseresgate.com.br</p>
+                            <p><i class="bi bi-clock me-2"></i> Segunda a Sexta: 9h às 17h</p>
+                            
+                            <h5 class="mt-4 mb-3">Redes Sociais</h5>
+                            <div class="d-flex">
+                                <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                                <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+                                <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3">Horários de Culto</h5>
+                            <p><i class="bi bi-calendar-check me-2"></i> Domingo: 19h</p>
+                            <p><i class="bi bi-calendar-check me-2"></i> Quarta-feira: 19:30h (Estudo Bíblico)</p>
+                            <p><i class="bi bi-calendar-check me-2"></i> Sábado: 19:30h (Jovens)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4>Base Resgate</h4>
+                    <p>Um lugar de encontro com Deus e transformação de vidas.</p>
+                    <div class="mt-3">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h4>Links Rápidos</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#home" class="text-white text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="#sobre" class="text-white text-decoration-none">Sobre</a></li>
+                        <li class="mb-2"><a href="#eventos" class="text-white text-decoration-none">Eventos</a></li>
+                        <li class="mb-2"><a href="#assistir" class="text-white text-decoration-none">Assistir Online</a></li>
+                        <li class="mb-2"><a href="#contato" class="text-white text-decoration-none">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h4>Endereço</h4>
+                    <p>Rua Maria de Lourdes, 6275</p>
+                    <p>Igarape - Porto Velho, RO</p>
+                    <p>CEP: 76800-000</p>
+                    <p>(69) 99251-8269</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <hr class="mt-3 mb-4" style="background-color: rgba(105, 10, 10, 0.2);">
+                    <p class="mb-0">&copy; 2025 Base Resgate. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <div class="top-btn" id="backToTop">
+        <i class="bi bi-arrow-up"></i>
+    </div>
+
+    <!-- Bootstrap JS and Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para Carousel, Countdown e outras funcionalidades -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carousel Functionality
+            const slides = document.querySelectorAll('.carousel-slide');
+            const prevBtn = document.querySelector('.carousel-button.prev');
+            const nextBtn = document.querySelector('.carousel-button.next');
+            const dotsContainer = document.querySelector('.carousel-dots');
+            let currentSlide = 0;
+            let autoPlayInterval;
+            
+            // Create dots
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (index === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+            
+            const dots = document.querySelectorAll('.dot');
+            
+            function goToSlide(n) {
+                slides[currentSlide].classList.remove('active');
+                dots[currentSlide].classList.remove('active');
+                
+                currentSlide = (n + slides.length) % slides.length;
+                
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }
+            
+            function nextSlide() {
+                goToSlide(currentSlide + 1);
+            }
+            
+            function prevSlide() {
+                goToSlide(currentSlide - 1);
+            }
+            
+            // Set up event listeners
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Auto play
+            function startAutoPlay() {
+                autoPlayInterval = setInterval(nextSlide, 5000);
+            }
+            
+            function stopAutoPlay() {
+                clearInterval(autoPlayInterval);
+            }
+            
+            // Start auto play on page load
+            startAutoPlay();
+            
+            // Pause auto play on hover
+            const carouselContainer = document.querySelector('.carousel-container');
+            carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+            carouselContainer.addEventListener('mouseleave', startAutoPlay);
+            
+            // Countdown timer
+            function updateCountdown() {
+                // Próximo domingo às 19h
+                const now = new Date();
+                let targetDate = new Date();
+                
+                // Definir para o próximo domingo
+                targetDate.setDate(now.getDate() + (7 - now.getDay()) % 7);
+                // Se hoje for domingo e ainda não são 19h, use hoje
+                if (now.getDay() === 0 && now.getHours() < 19) {
+                    targetDate.setDate(now.getDate());
+                }
+                
+                // Definir hora para 19:00:00
+                targetDate.setHours(19, 0, 0, 0);
+                
+                // Se já passou do horário de hoje, adicionar 7 dias
+                if (now > targetDate) {
+                    targetDate.setDate(targetDate.getDate() + 7);
+                }
+                
+                const timeLeft = targetDate - now;
+                
+                // Calcular dias, horas, minutos e segundos
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                // Atualizar a interface
+                document.getElementById('days').innerText = days.toString().padStart(2, '0');
+                document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+            }
+            
+            // Atualizar a contagem regressiva a cada segundo
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Back to Top Button
+            const backToTopBtn = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('active');
+                } else {
+                    backToTopBtn.classList.remove('active');
+                }
+            });
+            
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Formulário de Contato
+            const contactForm = document.getElementById('contactForm');
+            
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Aqui você adicionaria o código para enviar o formulário
+                    alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+                    contactForm.reset();
+                });
+            }
+            
+            // Smooth scroll para links de navegação
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        
+                        window.scrollTo({
+                            top: target.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Fechar o menu mobile se estiver aberto
+                        const navbarCollapse = document.getElementById('navbarNav');
+                        if (navbarCollapse.classList.contains('show')) {
+                            document.querySelector('.navbar-toggler').click();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
